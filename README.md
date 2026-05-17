@@ -1,2 +1,2 @@
-# BQ32000_RTC_Library
-Library for BQ32000 Real Time Clock
+# RTC_Library
+Library for Real Time Clock
