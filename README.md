@@ -41,8 +41,8 @@ void main(void) {
     SYSTEM_Initialize();
     I2C_Initialize();
     
-    // Initialize RTC module
-    RTC_Init();
+    // Initialize RTC module BQ32000
+    RTC_Initialize(RTC_MODEL_BQ32000, BQ32000_DEVICE_ADDRESS);
     
     // Initialize time and date structures
     Time_t horaInicial = {.hours = 18, .minutes = 12, .seconds = 0, .timeMode = TwentyFourHoursMode};
