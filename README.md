@@ -70,4 +70,4 @@ void main(void) {
 
 ## Documentation & Tutorial
 For a detailed implementation explanation and step-by-step guide, you can review the following examples:
-* https://mrchunckuee.blogspot.com/
+* [https://mrchunckuee.blogspot.com/](https://mrchunckuee.blogspot.com/search/label/Librerias%20XC8)
