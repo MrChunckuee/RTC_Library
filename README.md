@@ -10,10 +10,10 @@ A C library for interfacing with Real-Time Clock (RTC) modules using Microchip P
 ## Supported / Tested Devices
 This library is designed to work with standard I2C RTC integrated circuits. The following chips have been explicitly tested and verified:
 
-| Microcontroller | RTC Chip | Status | Notes |
-| :--- | :--- | :--- | :--- |
-| **PIC18F25K22** | **TI BQ32000** | ✔ Fully Tested | Verified via physical hardware implementation. |
-| *Generic PIC16 / PIC18* | **DS1307 / DS3231** | ⚠ Compatible | Compatible via standard I2C register mapping. |
+| Microcontroller | RTC Chip | Status | Notes | Resources |
+| :--- | :--- | :--- | :--- | :--- |
+| **PIC18F25K22** | **TI BQ32000** | ✔ Fully Tested | Verified via physical hardware implementation. | [I2C Library](https://github.com/MrChunckuee/XC8-PIC18F25K22-Peripheral_Library) |
+| *Generic PIC16 / PIC18* | **DS1307 / DS3231** | ⚠ Compatible | Compatible via standard I2C register mapping. | |
 
 ## Hardware Connection
 Typical connection for I2C operation (using a standard module like Tiny RTC):
