@@ -54,7 +54,7 @@ void RTC_Initialize(RTC_Model_t model, uint8_t i2cAddress){
     _selectedModel = model;
     _rtcI2cAddress = i2cAddress & 0xFE; // Asegura que el bit de lectura/escritura empiece en 0
     
-    // Encendemos el oscilador automáticamente dependiendo del chip
+    // Encendemos el oscilador automÃ¡ticamente dependiendo del chip
     RTC_StartClock();
 }
 
@@ -72,12 +72,16 @@ void RTC_StartClock(void){
     uint8_t tempReg;
     
     if(_selectedModel == RTC_MODEL_BQ32000){
-        // BQ32000: Bit 7 en 1 detiene el oscilador temporalmente, poner a 0 lo activa
+        // BQ32000: Bit 7 en 1 detiene el oscilador, en 0 ya estÃ¡ corriendo.
+        // Si STOP == 0 no se toca el registro: evita reiniciar el cristal en cada
+        // encendido (el BQ32000 conserva STOP entre ciclos de alimentaciÃ³n).
         tempReg = RTC_ReadByte(RTC_SECONDS_ADDRESS);
-        tempReg |= 0x80;
-        RTC_WriteByte(RTC_SECONDS_ADDRESS, tempReg);
-        tempReg &= 0x7F;
-        RTC_WriteByte(RTC_SECONDS_ADDRESS, tempReg);
+        if ((tempReg & 0x80) != 0){
+            tempReg |= 0x80;
+            RTC_WriteByte(RTC_SECONDS_ADDRESS, tempReg);
+            tempReg &= 0x7F;
+            RTC_WriteByte(RTC_SECONDS_ADDRESS, tempReg);
+        }
     } 
     else if(_selectedModel == RTC_MODEL_DS1307){
         // DS1307: Bit 7 del registro 0x00 es CH (Clock Halt). Debe ser 0 para que cuente.
@@ -86,9 +90,9 @@ void RTC_StartClock(void){
         RTC_WriteByte(RTC_SECONDS_ADDRESS, tempReg);
     }
     else if(_selectedModel == RTC_MODEL_DS3231){
-        // DS3231: El cristal está integrado y siempre corre, pero se puede limpiar 
+        // DS3231: El cristal estÃ¡ integrado y siempre corre, pero se puede limpiar 
         // el bit EOSC en el registro de control (0x0E) si fuera necesario.
-        // Por simplicidad, se puede dejar vacío o limpiar alarmas.
+        // Por simplicidad, se puede dejar vacÃ­o o limpiar alarmas.
     }
 }
 
@@ -253,7 +257,7 @@ void RTC_SetTime(const Time_t *time){
     dataBuff[1] = DEC_to_BCD(time->minutes);
     HourBcd = DEC_to_BCD(time->hours);
     
-    // Solo aplicar máscaras AM/PM si el chip NO es el BQ32000 y se seleccionó el modo
+    // Solo aplicar mÃ¡scaras AM/PM si el chip NO es el BQ32000 y se seleccionÃ³ el modo
     if (_selectedModel != RTC_MODEL_BQ32000){
         if (time->timeMode == PM_Time) {
             HourBcd |= 0x60; // 12-Hour Mode + PM
@@ -285,13 +289,13 @@ bool RTC_GetTime(Time_t *result) {
     result->seconds = BCD_to_DEC(dataBuff[0] & 0x7F);
     result->minutes = BCD_to_DEC(dataBuff[1]);
     
-    // Decodificar horas según el chip y su configuración interna
+    // Decodificar horas segÃºn el chip y su configuraciÃ³n interna
     if (_selectedModel != RTC_MODEL_BQ32000 && (dataBuff[2] & 0x40)) {
-        // Si el bit 6 está arriba, significa modo 12 Horas activo en DS1307/DS3231
+        // Si el bit 6 estÃ¡ arriba, significa modo 12 Horas activo en DS1307/DS3231
         result->hours = BCD_to_DEC(dataBuff[2] & 0x1F);
         result->timeMode = (dataBuff[2] & 0x20) ? PM_Time : AM_Time;
     } else {
-        // Modo 24 Horas estándar (Para el BQ32000)
+        // Modo 24 Horas estÃ¡ndar (Para el BQ32000)
         result->hours   = BCD_to_DEC(dataBuff[2] & 0x3F);
         result->timeMode = TwentyFourHoursMode;
     }
